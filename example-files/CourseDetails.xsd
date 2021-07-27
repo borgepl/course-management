@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           targetNamespace="http://deborger.com/courses" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://deborger.com/courses">
+  <xs:element name="GetCourseDetailsRequest" type="cour:GetCourseDetailsRequestType" xmlns:cour="http://deborger.com/courses"/>
+  <xs:complexType name="GetCourseDetailsRequestType">
+    <xs:sequence>
+      <xs:element type="xs:integer" name="id"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetCourseDetailsResponse" type="cour:GetCourseDetailsResponseType" xmlns:cour="http://deborger.com/courses"/>
+  <xs:complexType name="GetCourseDetailsResponseType">
+    <xs:sequence>
+      <xs:element type="tns:CourseDetails" name="CourseDetails"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CourseDetails">
+    <xs:sequence>
+      <xs:element type="xs:integer" name="id"/>
+      <xs:element type="xs:string" name="name"/>
+      <xs:element type="xs:string" name="description"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

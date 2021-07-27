@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GetCourseDetailsResponse xmlns="http://deborger.com/courses"
+                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xsi:schemaLocation="http://deborger.com/courses CourseDetails.xsd">
+    <CourseDetails>
+        <id>123</id>
+        <name>Spring Tutorial</name>
+        <description>bla bla bla</description>
+    </CourseDetails>
+</GetCourseDetailsResponse>
