@@ -4,6 +4,7 @@ import com.deborger.courses.*;
 import com.deborger.soap.webservices.coursemanagement.soap.bean.Course;
 import com.deborger.soap.webservices.coursemanagement.soap.exception.CourseNotFoundException;
 import com.deborger.soap.webservices.coursemanagement.soap.service.CourseDetailsService;
+import com.deborger.soap.webservices.coursemanagement.soap.service.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -11,6 +12,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import java.util.List;
+import java.util.Optional;
 
 @Endpoint
 public class CourseDetailsEndpoint {
@@ -18,12 +20,15 @@ public class CourseDetailsEndpoint {
     @Autowired
     CourseDetailsService service;
 
+    @Autowired
+    CourseRepository courseRepository;
+
     @PayloadRoot(namespace = "http://deborger.com/courses", localPart = "GetCourseDetailsRequest")
     @ResponsePayload
     public GetCourseDetailsResponse processCourseDetails(@RequestPayload GetCourseDetailsRequest request) {
 
-        Course course = service.findById(request.getId());
-        if (course==null) {
+        Optional<Course> course = courseRepository.findById(request.getId());
+        if (!course.isPresent()) {
             throw new CourseNotFoundException("Invalid course id " + request.getId());
         }
         return mapCourseDetails(course);
@@ -33,7 +38,7 @@ public class CourseDetailsEndpoint {
     @ResponsePayload
     public GetAllCourseDetailsResponse processAllCourseDetails(@RequestPayload GetAllCourseDetailsRequest request) {
 
-        List<Course> courses = service.findAll();
+        List<Course> courses = courseRepository.findAll();
 
         return mapAllCourseDetails(courses);
     }
@@ -42,10 +47,16 @@ public class CourseDetailsEndpoint {
     @ResponsePayload
     public DeleteCourseDetailsResponse processDeleteCourseDetails(@RequestPayload DeleteCourseDetailsRequest request) {
 
-        CourseDetailsService.Status status = service.deleteById(request.getId());
-        DeleteCourseDetailsResponse response = new DeleteCourseDetailsResponse();
-        response.setStatus(mapStatus(status));
-        return response;
+        try{
+            courseRepository.deleteById(request.getId());
+            DeleteCourseDetailsResponse response = new DeleteCourseDetailsResponse();
+            response.setStatus(Status.SUCCESS);
+            return response;
+        } catch (Exception ignored) {
+            DeleteCourseDetailsResponse response = new DeleteCourseDetailsResponse();
+            response.setStatus(Status.FAILURE);
+            return response;
+        }
     }
 
     private Status mapStatus(CourseDetailsService.Status status) {
@@ -54,7 +65,7 @@ public class CourseDetailsEndpoint {
         } return Status.SUCCESS;
     }
 
-    private GetCourseDetailsResponse mapCourseDetails(Course course) {
+    private GetCourseDetailsResponse mapCourseDetails(Optional<Course> course) {
         GetCourseDetailsResponse response = new GetCourseDetailsResponse();
         response.setCourseDetails(mapCourse(course));
         return response;
@@ -63,19 +74,19 @@ public class CourseDetailsEndpoint {
     private GetAllCourseDetailsResponse mapAllCourseDetails(List<Course> courses) {
         GetAllCourseDetailsResponse response = new GetAllCourseDetailsResponse();
         for (Course course : courses) {
-            CourseDetails mapCourse = mapCourse(course);
+            CourseDetails mapCourse = mapCourse(Optional.ofNullable(course));
             response.getCourseDetails().add(mapCourse);
         }
         return response;
     }
 
-    private CourseDetails mapCourse(Course course) {
+    private CourseDetails mapCourse(Optional<Course> course) {
 
         CourseDetails courseDetails = new CourseDetails();
 
-        courseDetails.setId(course.getId());
-        courseDetails.setName(course.getName());
-        courseDetails.setDescription(course.getDescription());
+        courseDetails.setId(course.get().getId());
+        courseDetails.setName(course.get().getName());
+        courseDetails.setDescription(course.get().getDescription());
 
         return courseDetails;
     }

@@ -1,14 +1,32 @@
 package com.deborger.soap.webservices.coursemanagement.soap.bean;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+//Table - Course
+@Entity
 public class Course {
+
+    @Id
+    @GeneratedValue
     private int id;
     private String name;
     private String description;
+
+    public Course(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public Course(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public Course() {
+
     }
 
     public int getId() {
