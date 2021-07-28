@@ -18,9 +18,6 @@ import java.util.Optional;
 public class CourseDetailsEndpoint {
 
     @Autowired
-    CourseDetailsService service;
-
-    @Autowired
     CourseRepository courseRepository;
 
     @PayloadRoot(namespace = "http://deborger.com/courses", localPart = "GetCourseDetailsRequest")
@@ -57,6 +54,20 @@ public class CourseDetailsEndpoint {
             response.setStatus(Status.FAILURE);
             return response;
         }
+    }
+
+    @PayloadRoot(namespace = "http://deborger.com/courses", localPart = "AddCourseRequest")
+    @ResponsePayload
+    public AddCourseResponse addCourse(@RequestPayload AddCourseRequest request) {
+
+        Course newCourse = new Course();
+        newCourse.setName(request.getCourseInfo().getName());
+        newCourse.setDescription(request.getCourseInfo().getDescription());
+        Course savedCourse = courseRepository.save(newCourse);
+        AddCourseResponse response = new AddCourseResponse();
+        response.setStatus(Status.SUCCESS);
+        response.setId(savedCourse.getId());
+        return response;
     }
 
     private Status mapStatus(CourseDetailsService.Status status) {

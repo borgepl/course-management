@@ -68,6 +68,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -94,6 +99,32 @@
                     <source>${project.basedir}/src/main/resources/CourseDetails.xsd</source>
                     <clearOutputDir>false</clearOutputDir>
                     </sources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>wsimport-from-jdk</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <xauthFile>src/main/resources/authfile.txt</xauthFile>
+                    <wsdlUrls>
+                        <wsdlUrl>http://localhost:8080/ws/courses.wsdl</wsdlUrl>
+                    </wsdlUrls>
+                    <keep>true</keep>
+                    <packageName>com.deborger.soap.webservices.coursemanagement.soap.client.generated</packageName>
+                    <sourceDestDir>src/main/java</sourceDestDir>
+                    <xadditionalHeaders>true</xadditionalHeaders>
+
+                    <xdebug>true</xdebug>
                 </configuration>
             </plugin>
 

@@ -47,6 +47,23 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="AddCourseRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="tns:CourseInfo" name="CourseInfo"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AddCourseResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="tns:Status" name="status"/>
+        <xs:element type="xs:int" name="id"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   
   <xs:simpleType name="Status">
     <xs:restriction base="xs:string">
@@ -62,4 +79,12 @@
       <xs:element type="xs:string" name="description"/>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:complexType name="CourseInfo">
+    <xs:sequence>
+      <xs:element type="xs:string" name="name"/>
+      <xs:element type="xs:string" name="description"/>
+    </xs:sequence>
+  </xs:complexType>
+
 </xs:schema>
